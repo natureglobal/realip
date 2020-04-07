@@ -1,4 +1,4 @@
-(WIP) go-realip
+go-realip
 =======
 
 [![Test Status](https://github.com/natureglobal/go-realip/workflows/test/badge.svg?branch=master)][actions]
@@ -30,7 +30,8 @@ handler = middleware(handler)
 
 ## Description
 
-The go-realip package implements the same behavior as Nginx's ngx\_http\_go-realip\_module in Go's http middleware layer.
+The go-realip package implements detect clietn real IP from request headers in Go's http middleware layer.
+This have a similar behavior as Nginx's ngx\_http\_go-realip\_module
 
 ## Installation
 
