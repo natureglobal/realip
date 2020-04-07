@@ -18,6 +18,9 @@ const (
 // Middleware returns a http middleware detecting the real IP of the client from request
 // and set it in the request header.
 func Middleware(c *Config) (func(http.Handler) http.Handler, error) {
+	if c == nil {
+		c = &Config{}
+	}
 	if strings.ToLower(c.realIPHeader()) == strings.ToLower(headerForwarded) {
 		return nil, errors.New("haven't supported Forwarded header yet")
 	}
@@ -45,19 +48,24 @@ type Config struct {
 	SetHeader string
 }
 
+func remoteIP(remoteAddr string) string {
+	ip, _, _ := net.SplitHostPort(remoteAddr)
+	return ip
+}
+
 func (c *Config) handler(next http.Handler) http.Handler {
 	switch c.realIPHeader() {
 	case HeaderXForwardedFor:
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-			if len(c.RealIPFrom) > 0 && !trustedIP(net.ParseIP(req.RemoteAddr), c.RealIPFrom) {
-				req.Header.Set(c.setHeader(), req.RemoteAddr)
+			if len(c.RealIPFrom) > 0 && !trustedIP(net.ParseIP(remoteIP(req.RemoteAddr)), c.RealIPFrom) {
+				req.Header.Set(c.setHeader(), remoteIP(req.RemoteAddr))
 			} else {
 				realIP := realIPFromXFF(
 					req.Header.Get(HeaderXForwardedFor),
 					c.RealIPFrom,
 					c.RealIPRecursive)
 				if realIP == "" {
-					realIP = req.RemoteAddr
+					realIP = remoteIP(req.RemoteAddr)
 				}
 				req.Header.Set(c.setHeader(), realIP)
 			}
@@ -65,12 +73,12 @@ func (c *Config) handler(next http.Handler) http.Handler {
 		})
 	default:
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-			if len(c.RealIPFrom) > 0 && !trustedIP(net.ParseIP(req.RemoteAddr), c.RealIPFrom) {
-				req.Header.Set(c.setHeader(), req.RemoteAddr)
+			if len(c.RealIPFrom) > 0 && !trustedIP(net.ParseIP(remoteIP(req.RemoteAddr)), c.RealIPFrom) {
+				req.Header.Set(c.setHeader(), remoteIP(req.RemoteAddr))
 			} else {
 				realIP := req.Header.Get(c.realIPHeader())
 				if realIP == "" {
-					realIP = req.RemoteAddr
+					realIP = remoteIP(req.RemoteAddr)
 				}
 				req.Header.Set(c.setHeader(), realIP)
 			}
