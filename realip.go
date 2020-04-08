@@ -57,7 +57,7 @@ func (c *Config) handler(next http.Handler) http.Handler {
 	switch c.realIPHeader() {
 	case HeaderXForwardedFor:
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-			if len(c.RealIPFrom) > 0 && !trustedIP(net.ParseIP(remoteIP(req.RemoteAddr)), c.RealIPFrom) {
+			if !trustedIP(net.ParseIP(remoteIP(req.RemoteAddr)), c.RealIPFrom) {
 				req.Header.Set(c.setHeader(), remoteIP(req.RemoteAddr))
 			} else {
 				realIP := realIPFromXFF(
@@ -73,7 +73,7 @@ func (c *Config) handler(next http.Handler) http.Handler {
 		})
 	default:
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-			if len(c.RealIPFrom) > 0 && !trustedIP(net.ParseIP(remoteIP(req.RemoteAddr)), c.RealIPFrom) {
+			if !trustedIP(net.ParseIP(remoteIP(req.RemoteAddr)), c.RealIPFrom) {
 				req.Header.Set(c.setHeader(), remoteIP(req.RemoteAddr))
 			} else {
 				realIP := req.Header.Get(c.realIPHeader())
@@ -88,6 +88,9 @@ func (c *Config) handler(next http.Handler) http.Handler {
 }
 
 func trustedIP(ip net.IP, realIPFrom []*net.IPNet) bool {
+	if len(realIPFrom) == 0 {
+		return true
+	}
 	for _, fromIP := range realIPFrom {
 		if fromIP.Contains(ip) {
 			return true
@@ -124,5 +127,5 @@ func realIPFromXFF(xff string, realIPFrom []*net.IPNet, recursive bool) string {
 			return ipStr
 		}
 	}
-	return ""
+	return strings.TrimSpace(ips[0])
 }

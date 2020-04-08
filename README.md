@@ -11,7 +11,7 @@ go-realip
 [license]: https://github.com/natureglobal/go-realip/blob/master/LICENSE
 [godoc]: https://godoc.org/github.com/natureglobal/go-realip
 
-The go-realip detects RealIP in Go's http middleware layer.
+The go-realip detects client real ip in Go's HTTP middleware layer.
 
 ## Synopsis
 
@@ -30,7 +30,7 @@ handler = middleware(handler)
 
 ## Description
 
-The go-realip package implements detect clietn real IP from request headers in Go's http middleware layer.
+The go-realip package implements detecting client real IP mechanisms from request headers in Go's HTTP middleware layer.
 This have a similar behavior as Nginx's ngx\_http\_go-realip\_module
 
 ## Installation

@@ -92,9 +92,31 @@ func TestMiddleware(t *testing.T) {
 			"X-Forwarded-For": "1.2.3.4, 1.1.1.1, 192.168.0.1",
 		},
 		expect: "127.0.0.1",
+	}, {
+		name: "x-forwarded-for: all entries in xff is trusted ip",
+		config: &realip.Config{
+			RealIPFrom: []*net.IPNet{
+				mustParseCIDR("127.0.0.1/32"),
+				mustParseCIDR("192.168.0.0/16"),
+			},
+			RealIPHeader:    realip.HeaderXForwardedFor,
+			RealIPRecursive: true,
+		},
+		headers: map[string]string{
+			"X-Forwarded-For": "192.168.0.2, 192.168.0.1",
+		},
+		expect: "192.168.0.2",
+	}, {
+		name: "x-forwarded-for: no RealIPFrom config and true RealIPRecursive return left entry in xff",
+		config: &realip.Config{
+			RealIPHeader:    realip.HeaderXForwardedFor,
+			RealIPRecursive: true,
+		},
+		headers: map[string]string{
+			"X-Forwarded-For": "192.168.0.2, 192.168.0.1",
+		},
+		expect: "192.168.0.2",
 	}}
-	// XXX: When RealIPFrom is empty and RealIPRecursive is true, I don't know what it
-	//      should do, so I don't test it.
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
