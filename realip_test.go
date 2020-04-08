@@ -143,4 +143,13 @@ func TestMiddleware(t *testing.T) {
 			}
 		})
 	}
+
+	t.Run("error", func(t *testing.T) {
+		_, err := realip.Middleware(&realip.Config{
+			RealIPHeader: "Forwarded",
+		})
+		if err == nil {
+			t.Errorf("error should be occurred but nil")
+		}
+	})
 }

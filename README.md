@@ -22,8 +22,8 @@ var middleware func(http.Handler) http.Handler = realip.MustMiddleware(&realip.C
     RealIPHeader:    realip.HeaderXForwardedFor,
     RealIPRecursive: true,
 })
-var handler http.HandlerFunc = func(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Hello World")
+var handler http.HandlerFunc = func(w http.ResponseWriter, req *http.Request) {
+    fmt.Fprintf(w, req.Header.Get("X-Real-IP"))
 })
 handler = middleware(handler)
 ```
@@ -31,7 +31,12 @@ handler = middleware(handler)
 ## Description
 
 The realip package implements detecting client real IP mechanisms from request headers in Go's HTTP middleware layer.
-This have a similar behavior as Nginx's ngx\_http\_realip\_module
+
+This realizes the similar function as Nginx's `ngx_http_realip_module` in the layer inside Go.
+Therefore, the setting property names and behaviors are also close to `ngx_http_realip_module`.
+
+The realip provides Go's HTTP Middleware. It detects the client's real ip from the request and
+sets it in the specified request header (Default: X-Real-IP).
 
 ## Installation
 
