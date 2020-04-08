@@ -1,17 +1,17 @@
-go-realip
+realip
 =======
 
-[![Test Status](https://github.com/natureglobal/go-realip/workflows/test/badge.svg?branch=master)][actions]
-[![Coverage Status](https://coveralls.io/repos/natureglobal/go-realip/badge.svg?branch=master)][coveralls]
+[![Test Status](https://github.com/natureglobal/realip/workflows/test/badge.svg?branch=master)][actions]
+[![Coverage Status](https://coveralls.io/repos/natureglobal/realip/badge.svg?branch=master)][coveralls]
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)][license]
-[![GoDoc](https://godoc.org/github.com/natureglobal/go-realip?status.svg)][godoc]
+[![GoDoc](https://godoc.org/github.com/natureglobal/realip?status.svg)][godoc]
 
-[actions]: https://github.com/natureglobal/go-realip/actions?workflow=test
-[coveralls]: https://coveralls.io/r/natureglobal/go-realip?branch=master
-[license]: https://github.com/natureglobal/go-realip/blob/master/LICENSE
-[godoc]: https://godoc.org/github.com/natureglobal/go-realip
+[actions]: https://github.com/natureglobal/realip/actions?workflow=test
+[coveralls]: https://coveralls.io/r/natureglobal/realip?branch=master
+[license]: https://github.com/natureglobal/realip/blob/master/LICENSE
+[godoc]: https://godoc.org/github.com/natureglobal/realip
 
-The go-realip detects client real ip in Go's HTTP middleware layer.
+The realip detects client real ip in Go's HTTP middleware layer.
 
 ## Synopsis
 
@@ -30,13 +30,13 @@ handler = middleware(handler)
 
 ## Description
 
-The go-realip package implements detecting client real IP mechanisms from request headers in Go's HTTP middleware layer.
-This have a similar behavior as Nginx's ngx\_http\_go-realip\_module
+The realip package implements detecting client real IP mechanisms from request headers in Go's HTTP middleware layer.
+This have a similar behavior as Nginx's ngx\_http\_realip\_module
 
 ## Installation
 
 ```console
-% go get github.com/natureglobal/go-realip
+% go get github.com/natureglobal/realip
 ```
 
 ## Author

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/natureglobal/go-realip"
+	"github.com/natureglobal/realip"
 )
 
 func mustParseCIDR(addr string) *net.IPNet {
