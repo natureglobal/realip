@@ -58,7 +58,9 @@ func (c *Config) handler(next http.Handler) http.Handler {
 	case HeaderXForwardedFor:
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			if !trustedIP(net.ParseIP(remoteIP(req.RemoteAddr)), c.RealIPFrom) {
-				req.Header.Set(c.setHeader(), remoteIP(req.RemoteAddr))
+				if realIP := remoteIP(req.RemoteAddr); realIP != "" {
+					req.Header.Set(c.setHeader(), realIP)
+				}
 			} else {
 				realIP := realIPFromXFF(
 					req.Header.Get(HeaderXForwardedFor),
@@ -67,20 +69,26 @@ func (c *Config) handler(next http.Handler) http.Handler {
 				if realIP == "" {
 					realIP = remoteIP(req.RemoteAddr)
 				}
-				req.Header.Set(c.setHeader(), realIP)
+				if realIP != "" {
+					req.Header.Set(c.setHeader(), realIP)
+				}
 			}
 			next.ServeHTTP(w, req)
 		})
 	default:
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			if !trustedIP(net.ParseIP(remoteIP(req.RemoteAddr)), c.RealIPFrom) {
-				req.Header.Set(c.setHeader(), remoteIP(req.RemoteAddr))
+				if realIP := remoteIP(req.RemoteAddr); realIP != "" {
+					req.Header.Set(c.setHeader(), realIP)
+				}
 			} else {
 				realIP := req.Header.Get(c.realIPHeader())
 				if realIP == "" {
 					realIP = remoteIP(req.RemoteAddr)
 				}
-				req.Header.Set(c.setHeader(), realIP)
+				if realIP != "" {
+					req.Header.Set(c.setHeader(), realIP)
+				}
 			}
 			next.ServeHTTP(w, req)
 		})
